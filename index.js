@@ -4,7 +4,7 @@ let drawVisual = null;
 const HEIGHT = window.innerHeight;
 const WIDTH = window.innerWidth;
 
-let canvas = document.getElementById("canvas")
+let canvas = document.getElementById("canvas");
 let canvasCtx = canvas.getContext("2d");
 
 canvas.height = HEIGHT;
@@ -70,6 +70,10 @@ navigator.mediaDevices.getUserMedia( {audio: true})
             // multiplied = true;
         }
         
+        function color (r,g,b,a) {
+            let colorStr = "rgba(" + Math.floor(r*255) + "," + Math.floor(g*255) + "," + Math.floor(b*255) + "," + a + ")";
+            canvasCtx.fillStyle = colorStr;
+        }
         
         const draw = () => {
             drawVisual = requestAnimationFrame(draw);
@@ -84,33 +88,16 @@ navigator.mediaDevices.getUserMedia( {audio: true})
             }
             buffer.push(DCTarray);
 
-            canvasCtx.fillStyle = "rgba(255,255,255, 0.15)";
+            color(1,1,1,0); // white
             canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+            color(0,0,0,1); // black
 
+            // buffer is two dimensional with time as its i axis and frequencies as j
             let barWidth = (WIDTH/ DCTarray.length);
-            // let r =  255;
-            // let g = Math.sin(new Date() / 5000);
-            // let b = Math.sin(new Date() / 4000);
-            // if(g < 0 || b < 0) {
-            //     g = Math.abs(g);
-            //     b = Math.abs(b);
-            // }
-            // if(g < 0.5 || b < 0.5) {
-            //     g = g + 0.3;
-            //     b = b + 0.3;
-            // }
-            // if(g > 0.8 || b > 0.8) {
-            //     g = g - 0.2;
-            //     b = b - 0.2;
-            // }
-            // let R = r;
-            // let G = Math.floor(g * 255);
-            // let B = Math.floor(g * 255);
-
-           // let alphA = 0.8;
             for (let i = 0; i< buffer.length; i++) {
                 for (let j = 0; j < buffer[i].length; j++) {
                     let v = buffer[i][j]* 0.5 + 0.5;
+                    color(v,v,v,1);
                     canvasCtx.fillRect(i*WIDTH/buffer.length
                                         , j * HEIGHT/buffer[i].length
                                         , (i+1) * WIDTH/buffer.length
@@ -124,11 +111,11 @@ navigator.mediaDevices.getUserMedia( {audio: true})
 
 
 function hzToMel(f) {
-    return 1127 * Math.log(1 + f/700)
+    return 1127 * Math.log(1 + f/700);
 }
 
 function melToHz(f) {
-    return 700 * (Math.exp(f / 1127)-1)
+    return 700 * (Math.exp(f / 1127)-1);
 }
 
 const DCTsize = 11;
