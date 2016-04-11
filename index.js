@@ -114,9 +114,74 @@ navigator.mediaDevices.getUserMedia( {audio: true})
                              , (j+1) * heightScale);
         }
       }};
+
     draw();
   })
   .catch((err) => {console.log(err);});
+
+
+
+function RingBuffer(maxLength) {
+  const a = new Float32Array(maxLength);
+  const b = new Float32Array(maxLength);
+
+  let bit = true;
+
+  let counter = 0;
+
+  // returns left buffer
+  let left = a;
+  let right = b;
+
+  // flips buffer
+  const flip = function() {
+    bit = !bit;
+
+    left = bit ? a: b;
+    right = bit ? b :a;
+  };
+
+  // O(1)
+  // get :: element -> void
+
+  this.push =  function(elem) {
+    right[counter] = elem;
+
+    counter += 1;
+
+    if (counter == maxLength) {
+      flip();
+      counter = 0;
+    }
+  };
+
+  // O(1)
+  // expects values from 0 to maxLength - 1
+  // get :: index -> element
+  this.get = function(index) {
+    let k = index + counter;
+    if (k >= maxLength) {
+      return right[k - maxLength];
+    } else {
+      return left[k];
+    }
+  };
+
+  this.toArray = function() {
+    let vals = new Float32Array(maxLength);
+    for (let i = 0; i < maxLength; i++) {
+      vals[i] = this.get(i);
+    }
+    return vals;
+  }
+
+  // return this;
+}
+
+// for (let i = 0; i < maxLength; i++) {
+//   let v = ringbuffer.get(i)[j];
+// }
+
 
 
 
