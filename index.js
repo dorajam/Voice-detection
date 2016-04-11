@@ -32,7 +32,8 @@ navigator.mediaDevices.getUserMedia( {audio: true})
     const numSections = numPoints - 1;
     const melDataArray = new Float32Array(numBins);
 
-    const buffer = [];
+    const buffer =  new RingBuffer(40);
+
     const melWidth = hzToMel(8000) / numSections;
 
 
@@ -84,9 +85,6 @@ navigator.mediaDevices.getUserMedia( {audio: true})
       // let DCTarray = Copy(melDataArray);
       let DCTarray = Copy (melDataArray);
 
-      if (buffer.length > 40) {
-        buffer.shift();
-      }
       buffer.push(DCTarray);
 
       // for (let i=0; i < DCTarray.length; i++) {
@@ -105,8 +103,8 @@ navigator.mediaDevices.getUserMedia( {audio: true})
       // buffer is two dimensional with time as its i axis and frequencies as j
       let barWidth = (WIDTH/ DCTarray.length);
       for (let i = 0; i< buffer.length; i++) {
-        for (let j = 0; j < buffer[i].length; j++) {
-          let v = Math.exp(buffer[i][j] /10) -1;
+        for (let j = 0; j < buffer.get(i).length; j++) {
+          let v = Math.exp(buffer.get(i)[j] /10) -1;
           color(v,v,v,1);
           canvasCtx.fillRect(i*widthScale
                              , j * heightScale
@@ -122,6 +120,8 @@ navigator.mediaDevices.getUserMedia( {audio: true})
 
 
 function RingBuffer(maxLength) {
+  this.length = maxLength;
+
   const a = new Float32Array(maxLength);
   const b = new Float32Array(maxLength);
 
