@@ -81,7 +81,7 @@ navigator.mediaDevices.getUserMedia( {audio: true})
 
             fromFFTtriangle(dataArray);
 
-            let DCTarray = DCT(melDataArray);
+            let DCTarray = Copy(melDataArray);
 
             if (buffer.length > 40) {
                 buffer.shift();
@@ -96,7 +96,7 @@ navigator.mediaDevices.getUserMedia( {audio: true})
             let barWidth = (WIDTH/ DCTarray.length);
             for (let i = 0; i< buffer.length; i++) {
                 for (let j = 0; j < buffer[i].length; j++) {
-                    let v = buffer[i][j]* 0.5 + 0.5;
+                    let v = buffer[i][j];
                     color(v,v,v,1);
                     canvasCtx.fillRect(i*WIDTH/buffer.length
                                         , j * HEIGHT/buffer[i].length
@@ -118,10 +118,18 @@ function melToHz(f) {
     return 700 * (Math.exp(f / 1127)-1);
 }
 
+function Copy(input) {
+    let output = new Float32Array(input.length);
+    for (let i = 0; i < input.length;i++) {
+        output[i] = input[i];
+    }
+    return output;
+}
+
 const DCTsize = 11;
 function DCT(input) {
     let N = input.length;
-    let output = new Float32Array(input.length);
+    let output = new Float32Array(DCTsize);
 
     for (let i = 2; i < 2 + DCTsize; i++) {
         let k = i - 2;
