@@ -81,12 +81,19 @@ navigator.mediaDevices.getUserMedia( {audio: true})
 
             fromFFTtriangle(dataArray);
 
-            let DCTarray = Copy(melDataArray);
+            // let DCTarray = Copy(melDataArray);
+            let DCTarray = DCT(melDataArray);
 
-            if (buffer.length > 40) {
+            if (buffer.length > 80) {
                 buffer.shift();
             }
             buffer.push(DCTarray);
+
+            // for (let i=0; i < DCTarray.length; i++) {
+            //     if (DCTarray[i] < 0) {
+            //         console.log(DCTarray[i]);
+            //     }
+            // }
 
             color(1,1,1,0); // white
             canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
@@ -96,7 +103,7 @@ navigator.mediaDevices.getUserMedia( {audio: true})
             let barWidth = (WIDTH/ DCTarray.length);
             for (let i = 0; i< buffer.length; i++) {
                 for (let j = 0; j < buffer[i].length; j++) {
-                    let v = buffer[i][j];
+                    let v = buffer[i][j] * 0.5 /30 + 0.5 ;
                     color(v,v,v,1);
                     canvasCtx.fillRect(i*WIDTH/buffer.length
                                         , j * HEIGHT/buffer[i].length
