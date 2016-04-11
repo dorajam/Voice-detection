@@ -99,16 +99,19 @@ navigator.mediaDevices.getUserMedia( {audio: true})
       canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
       color(0,0,0,1); // black
 
+      let widthScale = WIDTH/(buffer.length +1);
+      let heightScale = HEIGHT/(DCTarray.length + 1);
+
       // buffer is two dimensional with time as its i axis and frequencies as j
       let barWidth = (WIDTH/ DCTarray.length);
       for (let i = 0; i< buffer.length; i++) {
         for (let j = 0; j < buffer[i].length; j++) {
-          let v = Math.exp(buffer[i][j] /10) -1
+          let v = Math.exp(buffer[i][j] /10) -1;
           color(v,v,v,1);
-          canvasCtx.fillRect(i*WIDTH/buffer.length
-                             , j * HEIGHT/buffer[i].length
-                             , (i+1) * WIDTH/buffer.length
-                             , (j+1) * HEIGHT/buffer[i].length);
+          canvasCtx.fillRect(i*widthScale
+                             , j * heightScale
+                             , (i+1) * widthScale
+                             , (j+1) * heightScale);
         }
       }};
     draw();
