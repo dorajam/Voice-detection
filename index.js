@@ -86,7 +86,9 @@ navigator.mediaDevices.getUserMedia( {audio: true})
       let DCTarray = Copy (melDataArray);
 
       buffer.push(DCTarray);
-
+      if (cool < 2) console.log(buffer.toArray());
+      cool++;
+      
       // for (let i=0; i < DCTarray.length; i++) {
       //     if (DCTarray[i] < 0) {
       //         console.log(DCTarray[i]);
@@ -103,6 +105,9 @@ navigator.mediaDevices.getUserMedia( {audio: true})
       // buffer is two dimensional with time as its i axis and frequencies as j
       let barWidth = (WIDTH/ DCTarray.length);
       for (let i = 0; i< buffer.length; i++) {
+        if (buffer.get(i) === undefined) {
+          break;
+        }
         for (let j = 0; j < buffer.get(i).length; j++) {
           let v = Math.exp(buffer.get(i)[j] /10) -1;
           color(v,v,v,1);
@@ -120,48 +125,23 @@ navigator.mediaDevices.getUserMedia( {audio: true})
 
 
 function RingBuffer(maxLength) {
+  this.length = maxLength;
 
   const a = new Array(maxLength);
-  const b = new Array(maxLength);
-
-  let bit = true;
 
   let counter = 0;
-  this.length = 0;
-
-  // returns left buffer
-  let left = a;
-  let right = b;
-
-  // flips buffer
-  const flip = function() {
-    bit = !bit;
-
-    left = bit ? a: b;
-    right = bit ? b :a;
-  };
-
-  const updateLength = function() {
-    this.length +=1;
-    if (this.length > maxLength) {
-      this.length = maxLength;
-    }
-  }
 
   // O(1)
   // get :: element -> void
 
   this.push =  function(elem) {
-    right[counter] = elem;
+    a[counter] = elem;
 
     counter += 1;
 
     if (counter == maxLength) {
-      flip();
       counter = 0;
     }
-
-    updateLength();
   };
 
   // O(1)
@@ -170,9 +150,9 @@ function RingBuffer(maxLength) {
   this.get = function(index) {
     let k = index + counter;
     if (k >= maxLength) {
-      return right[k - maxLength];
+      return a[k - maxLength];
     } else {
-      return left[k];
+      return a[k];
     }
   };
 
@@ -182,7 +162,7 @@ function RingBuffer(maxLength) {
       vals[i] = this.get(i);
     }
     return vals;
-  }
+  };
 }
 
 
@@ -239,3 +219,4 @@ function fromFFTRect(input) {
   }
   return output;
 }
+let cool = 0;
