@@ -120,14 +120,14 @@ navigator.mediaDevices.getUserMedia( {audio: true})
 
 
 function RingBuffer(maxLength) {
-  this.length = maxLength;
 
-  const a = new Float32Array(maxLength);
-  const b = new Float32Array(maxLength);
+  const a = new Array(maxLength);
+  const b = new Array(maxLength);
 
   let bit = true;
 
   let counter = 0;
+  this.length = 0;
 
   // returns left buffer
   let left = a;
@@ -141,6 +141,13 @@ function RingBuffer(maxLength) {
     right = bit ? b :a;
   };
 
+  const updateLength = function() {
+    this.length +=1;
+    if (this.length > maxLength) {
+      this.length = maxLength;
+    }
+  }
+
   // O(1)
   // get :: element -> void
 
@@ -153,6 +160,8 @@ function RingBuffer(maxLength) {
       flip();
       counter = 0;
     }
+
+    updateLength();
   };
 
   // O(1)
@@ -168,19 +177,13 @@ function RingBuffer(maxLength) {
   };
 
   this.toArray = function() {
-    let vals = new Float32Array(maxLength);
+    let vals = new Array(maxLength);
     for (let i = 0; i < maxLength; i++) {
       vals[i] = this.get(i);
     }
     return vals;
   }
-
-  // return this;
 }
-
-// for (let i = 0; i < maxLength; i++) {
-//   let v = ringbuffer.get(i)[j];
-// }
 
 
 
