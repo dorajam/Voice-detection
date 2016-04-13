@@ -4,8 +4,12 @@ let drawVisual = null;
 const HEIGHT = window.innerHeight;
 const WIDTH = window.innerWidth;
 
+// canvas 1
 let canvas = document.getElementById("canvas");
 let canvasCtx = canvas.getContext("2d");
+
+// canvas 2
+// let canvas
 
 canvas.height = HEIGHT;
 canvas.width = WIDTH;
@@ -86,14 +90,6 @@ navigator.mediaDevices.getUserMedia( {audio: true})
       let DCTarray = Copy (melDataArray);
 
       buffer.push(DCTarray);
-      if (cool < 2) console.log(buffer.toArray());
-      cool++;
-      
-      // for (let i=0; i < DCTarray.length; i++) {
-      //     if (DCTarray[i] < 0) {
-      //         console.log(DCTarray[i]);
-      //     }
-      // }
 
       color(1,1,1,0); // white
       canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
@@ -219,4 +215,3 @@ function fromFFTRect(input) {
   }
   return output;
 }
-let cool = 0;
