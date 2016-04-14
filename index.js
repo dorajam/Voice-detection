@@ -76,7 +76,7 @@ navigator.mediaDevices.getUserMedia( {audio: true})
     }
     
     function color (r,g,b,a) {
-      let colorStr = "rgba(" + Math.floor(r*255) + "," + Math.floor(g*255) + "," + Math.floor(b*255) + "," + a + ")";
+      let colorStr = "rgba(" + Math.floor(r*255) + "," + Math.floor(g*150) + "," + Math.floor(b*150) + "," + a + ")";
       canvasCtx.fillStyle = colorStr;
     }
     

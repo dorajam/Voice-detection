@@ -1,10 +1,9 @@
 # Dora Jambor
-# MNIST digit recognition 
-# following Michael Nielsen's book on Neural Network and Deep Learning
 
 '''Neural network adjusted by L2 regulaizaton against overfitting-> weight decay. 
 with weight squashing to make the activation function smoother for achieving larger learning.'''
 
+import loader
 import numpy as np
 import random
 import math
@@ -18,7 +17,7 @@ from scipy import misc, ndimage
 class Network:            
     def __init__(self, sizes):
         self.layers = len(sizes)
-        self.sizes = sizes                                                              # list of neurons on each layer
+        self.sizes = sizes                                                             
         self.squashed_weights_init(sizes)
         self.result_new = []
 
@@ -26,16 +25,11 @@ class Network:
         self.weights = [np.random.randn(y,x)/np.sqrt(x) for x,y in zip(sizes[:-1], sizes[1:])]
         self.biases = [np.random.randn(y,1) for y in sizes[1:]]
 
-    def rand_weights_init(self,sizes):
-        self.weights = [np.random.randn(y,x) for x,y in zip(sizes[:-1], sizes[1:])]
-        self.biases = [np.random.randn(y,1) for y in sizes[1:]]
-
-
     def feedForward(self, a):
         '''Calculates the activation vector from all inputs from previous layer.'''
-        for b, w in zip(self.biases, self.weights):                                      # you loop through each neuron on each layer
-            a = sigmoid(np.dot(w, a) + b)                                                # to calculate activation vector in the last layer
-        return a                                                                         # z = w . x + b, a is the last output vector
+        for b, w in zip(self.biases, self.weights):
+            a = sigmoid(np.dot(w, a) + b)
+        return a
 
     def bingo(self, a, biases, weights):
         '''
@@ -51,38 +45,26 @@ class Network:
         being the training input and y being the desired output ->classification.
         You can use stochastic gradient descent with smaller batch sizes.
         '''
-        # ----------- if you want to manipulate data ------------ 
-        # extra = trainingSet[:5000]
-        # print 'Length of training data initially: ', len(trainingSet)
-        # data1 = trainingSet + [(ndimage.rotate(x, -10, reshape =False),y) for x,y in extra]
-        # data2 = data1 + [(ndimage.rotate(x, 10, reshape =False),y) for x,y in extra]
-        # trainingSet = data2 + [(ndimage.rotate(x, 0),y) for x,y in extra]
-        # print 'Length of manipulated training data: ', len(trainingSet)
-
-        # # manipulate validation set
-        # extratest = test_data[:1000]
-        # print 'Length of test data initially: ', len(test_data)
-        # test_data1 = test_data + [(ndimage.rotate(x, -10, reshape =False),y) for x,y in extratest]
-        # test_data2 = test_data1 + [(ndimage.rotate(x, 10, reshape =False),y) for x,y in extratest]
-        # test_data = test_data2 + [(ndimage.rotate(x, 0),y) for x,y in extratest]
-        # # should be 40K images
-        # print 'Length of manipulated test data: ',len(test_data)
-        # --------------------------------------------------------- 
 
         if test_data: n_test = len(test_data)
         trainingSize = len(trainingSet)
+        print 'the training size is: ',trainingSize
         self.result_new = []
 
         # repeat this until finding 'reliable' accuracy between desired and real outcomes
         for i in xrange(epochs):
             print "Starting epochs"
             start = time.time()
+
             random.shuffle(trainingSet)
+
             # create smaller samples to do your computations on                                                   
             batches = [trainingSet[k:k + batch_size] for k in xrange(0, trainingSize, batch_size)]
+
             # update each image in each batch
             for batch in batches:
                 self.update(batch, learningRate, lmbda, trainingSet)
+
             # take the 10K images that were reserved for validation and check accuracy
             print "Validating..."
             self.result_new.append(self.validate(test_data))
@@ -117,8 +99,11 @@ class Network:
             deltaBiases, deltaWeights = self.backprop(x,y)
 
             # calculate new biases and weights
+            print self.weights[0]
+            print '------------------------'
             self.biases = [b - learningRate * db/len(batch) for b,db in zip(self.biases, deltaBiases)]
             self.weights = [(1 - learningRate * lmbda/n) * w - learningRate * dw/len(batch) for w,dw in zip(self.weights, deltaWeights)]
+            print self.weights[0]
 
     def backprop(self, x, y):
         ''' Takes (x,y) where x is the pixel from the training image, y is the desired outcome
@@ -127,9 +112,9 @@ class Network:
         delta_b = [np.zeros(b.shape) for b in self.biases]                             # Set up numpy vector to store bias deltas
         delta_w = [np.zeros(w.shape) for w in self.weights]                            # Set up numpy vector to store weight deltas
 
-        a = x                         # x is the pixel input from the training image (at the input layer)
+        a = x
         z_vectors = []
-        all_activations = [x]         # store all input vectors
+        all_activations = [x]
 
         # First step: FEEDFORWARD
         for b, w in zip(self.biases, self.weights):
@@ -159,22 +144,9 @@ class Network:
         Then check how many images youll get the correct result for.
         '''
         test_results = [(np.argmax(self.feedForward(x)),y) for x, y in test_data]
-        # draw(test_data, test_result)                                                    # draw images in command line
+        # print '-----------------------------------------'
+        # print test_results
         return sum(int(x == y) for x, y in test_results)                                # check for accuracy
-
-def draw(test_data, test_result):
-        i = 0
-        for j in range(len(test_data)):
-            for num in np.nditer(test_data[j][0]):
-                if i%28 == 0:
-                    print "\n",
-                i += 1
-                if num < 0.1:
-                    sys.stdout.write(' ')
-                else:
-                    sys.stdout.write('x')
-            print "\nMy output:", test_results[j][0]
-            print "The desired class is:", test_data[j][1]
 
 def sigmoid(z):
         return 1.0/(1.0+np.exp(-z))
@@ -182,7 +154,5 @@ def sigmoid(z):
 def sigmoid_prime(z):
     ''' Returns the derivative of sigmoid(z = w.x + b) w.r.t. z'''
     return sigmoid(z)*(1-sigmoid(z))
-
-
 
 

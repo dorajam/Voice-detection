@@ -14,8 +14,6 @@ import json
 from numpyEncoder import *
 import base64
 
-
-
 # Librosa for audio
 import librosa
 
@@ -31,7 +29,6 @@ import IPython.display
 
 
 # In[2]:
-
 audio_path = './Dora01D.wav'
 audio_path2 = './Sean01D.wav'
 
@@ -39,11 +36,12 @@ audio_path2 = './Sean01D.wav'
 # input2 = np.array([])
 input1 = []
 input2 = []
+seconds_to_get = 90
 
-for i in range(60):
+for i in range(seconds_to_get):
     y, sr = librosa.load(audio_path, duration=1.0, offset=i)
     input1.append(y)
-for i in range(60):
+for i in range(seconds_to_get):
     y2, sr = librosa.load(audio_path2, duration=1.0, offset=i)
 #     input2 = np.append(input2,y2)
     input2.append(y2)
