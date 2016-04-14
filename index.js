@@ -88,7 +88,6 @@ navigator.mediaDevices.getUserMedia( {audio: true})
 
       // let DCTarray = Copy(melDataArray);
       let DCTarray = Copy (melDataArray);
-
       buffer.push(DCTarray);
 
       color(1,1,1,0); // white
