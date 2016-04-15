@@ -6,8 +6,8 @@ trainingData, testData = loader.load_data()
 import network
 
 eta = 1.5
-NUM_EPOCHS = 2
-INPUT_NEURONS = 1144
+NUM_EPOCHS = 100
+INPUT_NEURONS = 12 * 44
 HIDDEN_NEURONS = 30
 OUTPUT_NEURONS = 2
 BATCH_SIZE = 10

@@ -1,8 +1,5 @@
 # Dora Jambor
 
-'''Neural network adjusted by L2 regulaizaton against overfitting-> weight decay. 
-with weight squashing to make the activation function smoother for achieving larger learning.'''
-
 import loader
 import numpy as np
 import random
@@ -71,10 +68,10 @@ class Network:
             if test_data:
                 print "Epoch {0}: {1} / {2}".format(
                     i, self.result_new[-1], n_test), 'Percentage', format(self.result_new[-1]/float(n_test)*100, '.2f')
-            else:
-                print "Epoch {0} complete".format(i)
-            timer = time.time() - start
-            print "Estimated time: ", timer
+            # else:
+            #     print "Epoch {0} complete".format(i)
+            # timer = time.time() - start
+            # print "Estimated time: ", timer
 
         # f = open("weightsL2W.json", "w")
         # json.dump(self.weights, f, cls=NumpyEncoder)
@@ -99,11 +96,11 @@ class Network:
             deltaBiases, deltaWeights = self.backprop(x,y)
 
             # calculate new biases and weights
-            print self.weights[0]
-            print '------------------------'
+            # print self.weights[0]
+            # print '------------------------'
             self.biases = [b - learningRate * db/len(batch) for b,db in zip(self.biases, deltaBiases)]
-            self.weights = [(1 - learningRate * lmbda/n) * w - learningRate * dw/len(batch) for w,dw in zip(self.weights, deltaWeights)]
-            print self.weights[0]
+            self.weights = [w - learningRate * dw/len(batch) for w,dw in zip(self.weights, deltaWeights)]
+            # print self.weights [0]
 
     def backprop(self, x, y):
         ''' Takes (x,y) where x is the pixel from the training image, y is the desired outcome
