@@ -17,5 +17,3 @@ net = network.Network([INPUT_NEURONS,HIDDEN_NEURONS,OUTPUT_NEURONS])
 # the arguments are the following: training data, batch size, learning rate and number of epochs
 net.gradientDescent(trainingData, BATCH_SIZE, eta, NUM_EPOCHS, lmbda,
                     test_data=testData)
-
-

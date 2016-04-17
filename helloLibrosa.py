@@ -17,7 +17,7 @@ import librosa
 
 # matplotlib for displaying the output
 import matplotlib.pyplot as plt
-get_ipython().magic(u'matplotlib inline')
+# get_ipython().magic(u'matplotlib inline')
 # And seaborn to make it look nice
 import seaborn
 seaborn.set(style='ticks')
@@ -99,99 +99,98 @@ print S1[59].shape
 # print labelled_D
 # put two files into one inputData json
 inputData = labelled_D + labelled_S
-# inp = open("inputdata.json", "w")
-# json.dump(inputData,inp, cls=NumpyEncoder)
-# inp.close()
-# print labelled_D[0][0]
+inp = open("inputdata.json", "w")
+json.dump(inputData,inp, cls=NumpyEncoder)
+inp.close()
+print labelled_D[0][0]
 
 
 
 
 # In[66]:
+# ------------------------------------------ test for features -------------------------------------------------
+# # try to see features on a sample
+# sample = input1[0]
+# C = librosa.feature.chroma_cqt(y=sample, sr=sr)
+# y_harmonic, y_percussive = librosa.effects.hpss(sample) # 13s
+# C1 = librosa.feature.chroma_cqt(y=y_harmonic, sr=sr) # 5s
+# # In[63]:
 
-# try to see features on a sample
-sample = input1[0]
-C = librosa.feature.chroma_cqt(y=sample, sr=sr)
-y_harmonic, y_percussive = librosa.effects.hpss(sample) # 13s
-C1 = librosa.feature.chroma_cqt(y=y_harmonic, sr=sr) # 5s
+# # Make a new figure
+# plt.figure(figsize=(12,4))
 
+# # Display the spectrogram on a mel scale
+# plt.subplot(2,1,1)
 
-# In[63]:
+# # sample rate and hop length parameters are used to render the time axis
+# librosa.display.specshow(C, sr=sr, x_axis='time', y_axis='mel')
 
-# Make a new figure
-plt.figure(figsize=(12,4))
+# plt.subplot(2,1,2)
+# librosa.display.specshow(C1, sr=sr, x_axis='time', y_axis='mel')
+# # Put a descriptive title on the plot
+# plt.title('CQT')
 
-# Display the spectrogram on a mel scale
-plt.subplot(2,1,1)
+# # draw a color bar
+# plt.colorbar(format='%+02.0f dB')
 
-# sample rate and hop length parameters are used to render the time axis
-librosa.display.specshow(C, sr=sr, x_axis='time', y_axis='mel')
-
-plt.subplot(2,1,2)
-librosa.display.specshow(C1, sr=sr, x_axis='time', y_axis='mel')
-# Put a descriptive title on the plot
-plt.title('CQT')
-
-# draw a color bar
-plt.colorbar(format='%+02.0f dB')
-
-# Make the figure layout compact
-plt.tight_layout()
-
-
-# In[23]:
-
-y_harmonic, y_percussive = librosa.effects.hpss(y)
+# # Make the figure layout compact
+# plt.tight_layout()
+# # ------------------------------------------------- end -------------------------------------------------
 
 
-# In[24]:
+# # In[23]:
 
-IPython.display.Audio(data=y_harmonic, rate=sr)
-
-
-# In[25]:
-
-IPython.display.Audio(data=y_percussive, rate=sr)
+# y_harmonic, y_percussive = librosa.effects.hpss(y)
 
 
-# In[26]:
+# # In[24]:
 
-# What do the spectrograms look like?
-# Let's make and display a mel-scaled power (energy-squared) spectrogram
-S_harmonic   = librosa.feature.melspectrogram(y_harmonic, sr=sr)
-S_percussive = librosa.feature.melspectrogram(y_percussive, sr=sr)
-
-# Convert to log scale (dB). We'll use the peak power as reference.
-log_Sh = librosa.logamplitude(S_harmonic, ref_power=np.max)
-log_Sp = librosa.logamplitude(S_percussive, ref_power=np.max)
-
-# Make a new figure
-plt.figure(figsize=(12,6))
-
-plt.subplot(2,1,1)
-# Display the spectrogram on a mel scale
-librosa.display.specshow(log_Sh, sr=sr, y_axis='mel')
-
-# Put a descriptive title on the plot
-plt.title('mel power spectrogram (Harmonic)')
-
-# draw a color bar
-plt.colorbar(format='%+02.0f dB')
-
-plt.subplot(2,1,2)
-librosa.display.specshow(log_Sp, sr=sr, x_axis='time', y_axis='mel')
-
-# Put a descriptive title on the plot
-plt.title('mel power spectrogram (Percussive)')
-
-# draw a color bar
-plt.colorbar(format='%+02.0f dB')
-
-# Make the figure layout compact
-plt.tight_layout()
+# IPython.display.Audio(data=y_harmonic, rate=sr)
 
 
-# In[ ]:
+# # In[25]:
+
+# IPython.display.Audio(data=y_percussive, rate=sr)
+
+
+# # In[26]:
+
+# # What do the spectrograms look like?
+# # Let's make and display a mel-scaled power (energy-squared) spectrogram
+# S_harmonic   = librosa.feature.melspectrogram(y_harmonic, sr=sr)
+# S_percussive = librosa.feature.melspectrogram(y_percussive, sr=sr)
+
+# # Convert to log scale (dB). We'll use the peak power as reference.
+# log_Sh = librosa.logamplitude(S_harmonic, ref_power=np.max)
+# log_Sp = librosa.logamplitude(S_percussive, ref_power=np.max)
+
+# # Make a new figure
+# plt.figure(figsize=(12,6))
+
+# plt.subplot(2,1,1)
+# # Display the spectrogram on a mel scale
+# librosa.display.specshow(log_Sh, sr=sr, y_axis='mel')
+
+# # Put a descriptive title on the plot
+# plt.title('mel power spectrogram (Harmonic)')
+
+# # draw a color bar
+# plt.colorbar(format='%+02.0f dB')
+
+# plt.subplot(2,1,2)
+# librosa.display.specshow(log_Sp, sr=sr, x_axis='time', y_axis='mel')
+
+# # Put a descriptive title on the plot
+# plt.title('mel power spectrogram (Percussive)')
+
+# # draw a color bar
+# plt.colorbar(format='%+02.0f dB')
+
+# # Make the figure layout compact
+# plt.tight_layout()
+
+
+# # In[ ]:
 
 
 
