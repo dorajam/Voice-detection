@@ -1,13 +1,4 @@
 
-# coding: utf-8
-
-# In[2]:
-
-from __future__ import print_function
-
-
-# In[1]:
-
 # We'll need numpy for some mathematical operations
 import numpy as np
 import json
@@ -28,8 +19,23 @@ import IPython.display
 
 # In[30]:
 
-audio_path = './Dora01D.wav'
-audio_path2 = './Sean01D.wav'
+audio_path = ['./music/01 Crazy In Love.m4a','./music/02 Naughty Girl.m4a','./music/03 Baby Boy.m4a',
+    './music/04 Hip Hop Star.m4a',
+    './music/05 Me, Myself And I.m4a',
+    './music/06 Yes.m4a',
+    './music/07 Signs.m4a',
+    './music/08 I Fall in Love Too Easily.m4a',
+    './music/08 Speechless.m4a',
+    './music/09 That\'s How You Like It.m4a',
+    './music/10 Be With You.m4a',
+    './music/11 The Closer I Get To You.m4a',
+    './music/12 Dangerously In Love 2.m4a',
+    './music/13 Beyoncé Interlude.m4a',
+    './music/14 Gift From Virgo.m4a',
+    './music/15 Work It Out.m4a',
+    './music/16 Bonnie & Clyde \03.m4a']
+
+audio_path2 = './music/01 Best of Chet Baker (Continuous).mp3'
 
 # input1 = np.array([])
 # input2 = np.array([])
@@ -42,11 +48,10 @@ for i in range(seconds_to_get):
     y, sr = librosa.load(audio_path, duration=1.0, offset=i)
     input1.append(y)
     c+=2
-c = 0
-for i in range(seconds_to_get):
+
+for i in range(len(input1)):
     y2, sr = librosa.load(audio_path2, duration=1.0, offset=i)
     input2.append(y2)
-    c+=2
     
 print type(input1[0])
 print len(input1[0])

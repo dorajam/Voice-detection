@@ -1,15 +1,8 @@
 
-# coding: utf-8
-
-# In[2]:
-
-# from __future__ import print_function
-
-# In[1]:
-
 # We'll need numpy for some mathematical operations
 import numpy as np
 import json
+import math
 
 # Librosa for audio
 import librosa
@@ -24,74 +17,84 @@ seaborn.set(style='ticks')
 import IPython.display
 from numpyEncoder import *
 
+# --------- use the following commands for the cleanup -----------
+# concanate .wav files, get rid of silences under -20 decibels and trim -> 11.10mins for each sample on one file
+# ffmpeg -f concat -i <( for f in *.wav; do echo "file '$(pwd)/$f'"; done ) output.wav
+# ffmpeg -i output.wav -t 8280 -acodec copy output_trimmed.wav
+# ffmpeg -i output_trimmed.wav -af silenceremove=0:0:0:-1:1:-20dB sound_input.wav
+
+# ------------------- to put all mp4 files in one file (input sample 1) -------------------
+# # only uncomment if you haven't populated the everything.m4a file yet
+# from glob import iglob
+# import shutil
+# import os
+# PATH = r'./music/'
+
+# destination = open('output.wav', 'wb')
+
+# for filename in iglob(os.path.join(PATH, '*.m4a')):
+#     shutil.copyfileobj(open(filename, 'rb'), destination)
+# destination.close()
+# ------------------------------------------------------------------------------------------
+
+# 1.20mins of Chet Baker + 35 mins of Beyonce
+# audio_path = './music/sound_input.wav'
+# # audio_path2 = './music/01 Best of Chet Baker (Continuous).mp3'
+
+# input1 = []
+seconds_to_get = 1340
+
+# for i in range(seconds_to_get):
+#     y, sr = librosa.load(audio_path, duration=1.0, offset=i)
+#     input1.append(y)
 
 
-# In[30]:
+# # # ------------- store both samples in one ---------------
+# inp = open("inputdata.json", "w")
+# json.dump(input1, inp, cls=NumpyEncoder)
+# inp.close()
 
-audio_path = './Dora01D.wav'
-audio_path2 = './Sean01D.wav'
+# ------------- load merged audio from file ---------------
+f = open("inputdata.json")
+inputData = json.load(f, object_hook=json_numpy_obj_hook)
+f.close()
 
-# input1 = np.array([])
-# input2 = np.array([])
-input1 = []
-input2 = []
-seconds_to_get = 90
-
-for i in range(seconds_to_get):
-    y, sr = librosa.load(audio_path, duration=1.0, offset=i)
-    input1.append(y)
-
-for i in range(seconds_to_get):
-    y2, sr = librosa.load(audio_path2, duration=1.0, offset=i)
-    input2.append(y2)
-    
-print type(input1[0])
-print len(input1[0])
-print len(input1)
-print input1[0].shape
-
-print('HAS_SAMPLERATE: ', librosa.core.audio._HAS_SAMPLERATE)
-
-
-# IPython.display.Audio(data=y, rate=sr)
-# IPython.display.Audio(data=input1[0], rate=sr)
-
-import json
-
-
-inputData = input1 + input2
+# ------------- transform sound data + label ---------------
 size = len(inputData)
+print size
+sr = 22050
 S = []
 labelled = []
 
-
-# Let's make and display a mel-scaled power (energy-squared) spectrogram
-# Convert to log scale (dB). We'll use the peak power as reference.
+# add each 1 sec CQT chromogram as one input for the NN (formatted as a col matrix)
 for i in range(size):
     sample = inputData[i]
-    y_harmonic, y_percussive = librosa.effects.hpss(sample)
-    C = librosa.feature.chroma_cqt(y=y_harmonic, sr=sr)
-    # This is also an option - less clear features
-    # C = librosa.feature.chroma_cqt(y=sample, sr=sr)
-    S.append(C)
-    S[i] = S[i].reshape((12*44,1))
-    if i < seconds_to_get: # label 1 for Dora
-        labelled.append((S[i], 1))
-    else: # else Sean
-        labelled.append((S[i], 0))
+    if sample.shape == (22050,): # sample rate of 22050 --> 20580 for sample[235] and 0s after-> messes up
+        # y_harmonic, y_percussive = librosa.effects.hpss(sample)
+        # C = librosa.feature.chroma_cqt(y=y_harmonic, sr=sr)
+
+        # This is also an option - less clear features
+        C = librosa.feature.chroma_cqt(y=sample, sr=sr)
+
+        S.append(C)
+        S[i] = S[i].reshape((12*44,1))
+        if i < math.floor(seconds_to_get/2): # label 1 for Beyonce
+            labelled.append((S[i], 1))
+        else: # else Chet Baker
+            labelled.append((S[i], 0))
+
+    else:
+        print "Sample rate is messy"
 
 print len(S), len(S[0]), len(S[0][0])
 print type(S), type(S[0]), type(S[0][0])
 
-inputData = labelled
-inp = open("inputdata.json", "w")
-json.dump(inputData,inp, cls=NumpyEncoder)
-inp.close()
 
+# # ------------- store both samples in one ---------------
+f = open("input_to_feed.json", "w")
+json.dump(labelled, f, cls=NumpyEncoder)
+f.close()
 
-
-
-# In[66]:
 # ------------------------------------------ test for features -------------------------------------------------
 # # try to see features on a sample
 # sample = input1[0]
@@ -172,9 +175,5 @@ inp.close()
 
 # # Make the figure layout compact
 # plt.tight_layout()
-
-
-# # In[ ]:
-
 
 

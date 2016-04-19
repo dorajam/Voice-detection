@@ -1,7 +1,8 @@
 import loader
 
-# take half of Dora + half of Sean -> rest should be reserver for validation
+# take half of Dora + half of Sean -> rest should be reserved for validation
 trainingData, testData = loader.load_data()
+print len(trainingData), len(testData)
 
 import network
 

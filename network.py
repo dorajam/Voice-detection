@@ -42,10 +42,10 @@ class Network:
         being the training input and y being the desired output ->classification.
         You can use stochastic gradient descent with smaller batch sizes.
         '''
-
         if test_data: n_test = len(test_data)
         trainingSize = len(trainingSet)
-        print 'the training size is: ',trainingSize
+        print 'the training size is: ', trainingSize
+        print 'the test size is: ', len(test_data)
         self.result_new = []
 
         # repeat this until finding 'reliable' accuracy between desired and real outcomes
