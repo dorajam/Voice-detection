@@ -7,14 +7,16 @@ print len(trainingData), len(testData)
 import network
 
 eta = 1.5
-NUM_EPOCHS = 100
+NUM_EPOCHS = 30
 INPUT_NEURONS = 12 * 44
-HIDDEN_NEURONS = 30
+HIDDEN_LAYER1 = 50
+HIDDEN_LAYER2 = 100
+HIDDEN_LAYER3 = 100
 OUTPUT_NEURONS = 2
 BATCH_SIZE = 10
 lmbda = 0.1
 
-net = network.Network([INPUT_NEURONS,HIDDEN_NEURONS,OUTPUT_NEURONS])
+net = network.Network([INPUT_NEURONS,HIDDEN_LAYER1,HIDDEN_LAYER2,HIDDEN_LAYER3, OUTPUT_NEURONS])
 # the arguments are the following: training data, batch size, learning rate and number of epochs
 net.gradientDescent(trainingData, BATCH_SIZE, eta, NUM_EPOCHS, lmbda,
                     test_data=testData)

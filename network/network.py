@@ -99,8 +99,8 @@ class Network:
             # print self.weights[0]
             # print '------------------------'
             self.biases = [b - learningRate * db/len(batch) for b,db in zip(self.biases, deltaBiases)]
-            self.weights = [w - learningRate * dw/len(batch) for w,dw in zip(self.weights, deltaWeights)]
-            # print self.weights [0]
+            self.weights = [(1 - learningRate * lmbda/n) * w - learningRate * dw/len(batch) for w,dw in zip(self.weights, deltaWeights)]
+   # print self.weights [0]
 
     def backprop(self, x, y):
         ''' Takes (x,y) where x is the pixel from the training image, y is the desired outcome

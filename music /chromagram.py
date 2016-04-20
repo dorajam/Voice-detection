@@ -1,8 +1,18 @@
+# Dora Jambor
+# April 2016
+'''
+Takes each second of the raw .wav file, transforms it with Chromagram CQT 
+and puts it into a data array. This is then saved for the neural network as input_to_feed.json.
+Note, the original slicing up of the .wav file will take a while, 
+so make sure you write this into a json so that you can experiment with the transformations.
+'''
 
 # We'll need numpy for some mathematical operations
 import numpy as np
 import json
 import math
+import os
+import sys
 
 # Librosa for audio
 import librosa
@@ -18,28 +28,15 @@ import IPython.display
 from numpyEncoder import *
 
 # --------- use the following commands for the cleanup -----------
+''' make sure that .wav files are of same channels'''
 # concanate .wav files, get rid of silences under -20 decibels and trim -> 11.10mins for each sample on one file
 # ffmpeg -f concat -i <( for f in *.wav; do echo "file '$(pwd)/$f'"; done ) output.wav
 # ffmpeg -i output.wav -t 8280 -acodec copy output_trimmed.wav
 # ffmpeg -i output_trimmed.wav -af silenceremove=0:0:0:-1:1:-20dB sound_input.wav
+# ----------------------------------------------------------------
 
-# ------------------- to put all mp4 files in one file (input sample 1) -------------------
-# # only uncomment if you haven't populated the everything.m4a file yet
-# from glob import iglob
-# import shutil
-# import os
-# PATH = r'./music/'
-
-# destination = open('output.wav', 'wb')
-
-# for filename in iglob(os.path.join(PATH, '*.m4a')):
-#     shutil.copyfileobj(open(filename, 'rb'), destination)
-# destination.close()
-# ------------------------------------------------------------------------------------------
-
-# 11.10 mins of each artist
-# audio_path = './music/sound_input.wav'
-
+# # 11.10 mins of each artist
+# audio_path = 'sound_input.wav'
 
 input1 = []
 seconds_to_get = 1221
@@ -50,12 +47,12 @@ seconds_to_get = 1221
 
 
 # # ------------- store both samples in one ---------------
-# inp = open("inputdata.json", "w")
+# inp = open("audiobook.json", "w")
 # json.dump(input1, inp, cls=NumpyEncoder)
 # inp.close()
 
 # ------------- load merged audio from file ---------------
-f = open("inputdata.json")
+f = open("audiobook.json")
 inputData = json.load(f, object_hook=json_numpy_obj_hook)
 f.close()
 
@@ -70,11 +67,11 @@ labelled = []
 for i in range(size):
     sample = inputData[i]
     if sample.shape == (22050,): # sample rate of 22050 --> 20580 for sample[235] and 0s after-> messes up
-        # y_harmonic, y_percussive = librosa.effects.hpss(sample)
-        # C = librosa.feature.chroma_cqt(y=y_harmonic, sr=sr)
+        y_harmonic, y_percussive = librosa.effects.hpss(sample)
+        C = librosa.feature.chroma_cqt(y=y_harmonic, sr=sr)
 
         # This is also an option - less clear features
-        C = librosa.feature.chroma_cqt(y=sample, sr=sr)
+        # C = librosa.feature.chroma_cqt(y=sample, sr=sr)
 
         S.append(C)
         S[i] = S[i].reshape((12*44,1))
@@ -93,89 +90,6 @@ print type(S), type(S[0]), type(S[0][0])
 
 
 # # ------------- store both samples in one ---------------
-f = open("input_to_feed2.json", "w")
+f = open("audiobook_toFeed.json", "w")
 json.dump(labelled, f, cls=NumpyEncoder)
 f.close()
-
-# ------------------------------------------ test for features -------------------------------------------------
-# # try to see features on a sample
-# sample = input1[0]
-# C = librosa.feature.chroma_cqt(y=sample, sr=sr)
-# y_harmonic, y_percussive = librosa.effects.hpss(sample) # 13s
-# C1 = librosa.feature.chroma_cqt(y=y_harmonic, sr=sr) # 5s
-# # In[63]:
-
-# # Make a new figure
-# plt.figure(figsize=(12,4))
-
-# # Display the spectrogram on a mel scale
-# plt.subplot(2,1,1)
-
-# # sample rate and hop length parameters are used to render the time axis
-# librosa.display.specshow(C, sr=sr, x_axis='time', y_axis='mel')
-
-# plt.subplot(2,1,2)
-# librosa.display.specshow(C1, sr=sr, x_axis='time', y_axis='mel')
-# # Put a descriptive title on the plot
-# plt.title('CQT')
-
-# # draw a color bar
-# plt.colorbar(format='%+02.0f dB')
-
-# # Make the figure layout compact
-# plt.tight_layout()
-# # ------------------------------------------------- end -------------------------------------------------
-
-
-# # In[23]:
-
-# y_harmonic, y_percussive = librosa.effects.hpss(y)
-
-
-# # In[24]:
-
-# IPython.display.Audio(data=y_harmonic, rate=sr)
-
-
-# # In[25]:
-
-# IPython.display.Audio(data=y_percussive, rate=sr)
-
-
-# # In[26]:
-
-# # What do the spectrograms look like?
-# # Let's make and display a mel-scaled power (energy-squared) spectrogram
-# S_harmonic   = librosa.feature.melspectrogram(y_harmonic, sr=sr)
-# S_percussive = librosa.feature.melspectrogram(y_percussive, sr=sr)
-
-# # Convert to log scale (dB). We'll use the peak power as reference.
-# log_Sh = librosa.logamplitude(S_harmonic, ref_power=np.max)
-# log_Sp = librosa.logamplitude(S_percussive, ref_power=np.max)
-
-# # Make a new figure
-# plt.figure(figsize=(12,6))
-
-# plt.subplot(2,1,1)
-# # Display the spectrogram on a mel scale
-# librosa.display.specshow(log_Sh, sr=sr, y_axis='mel')
-
-# # Put a descriptive title on the plot
-# plt.title('mel power spectrogram (Harmonic)')
-
-# # draw a color bar
-# plt.colorbar(format='%+02.0f dB')
-
-# plt.subplot(2,1,2)
-# librosa.display.specshow(log_Sp, sr=sr, x_axis='time', y_axis='mel')
-
-# # Put a descriptive title on the plot
-# plt.title('mel power spectrogram (Percussive)')
-
-# # draw a color bar
-# plt.colorbar(format='%+02.0f dB')
-
-# # Make the figure layout compact
-# plt.tight_layout()
-
-
