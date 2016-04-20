@@ -37,19 +37,19 @@ from numpyEncoder import *
 # destination.close()
 # ------------------------------------------------------------------------------------------
 
-# 1.20mins of Chet Baker + 35 mins of Beyonce
+# 11.10 mins of each artist
 # audio_path = './music/sound_input.wav'
-# # audio_path2 = './music/01 Best of Chet Baker (Continuous).mp3'
 
-# input1 = []
-seconds_to_get = 1340
+
+input1 = []
+seconds_to_get = 1221
 
 # for i in range(seconds_to_get):
 #     y, sr = librosa.load(audio_path, duration=1.0, offset=i)
 #     input1.append(y)
 
 
-# # # ------------- store both samples in one ---------------
+# # ------------- store both samples in one ---------------
 # inp = open("inputdata.json", "w")
 # json.dump(input1, inp, cls=NumpyEncoder)
 # inp.close()
@@ -80,6 +80,8 @@ for i in range(size):
         S[i] = S[i].reshape((12*44,1))
         if i < math.floor(seconds_to_get/2): # label 1 for Beyonce
             labelled.append((S[i], 1))
+        # elif i in range(int(math.floor(seconds_to_get/3)), int(math.floor(seconds_to_get/3*2))):
+        #     labelled.append((S[i], 1))
         else: # else Chet Baker
             labelled.append((S[i], 0))
 
@@ -91,7 +93,7 @@ print type(S), type(S[0]), type(S[0][0])
 
 
 # # ------------- store both samples in one ---------------
-f = open("input_to_feed.json", "w")
+f = open("input_to_feed2.json", "w")
 json.dump(labelled, f, cls=NumpyEncoder)
 f.close()
 
