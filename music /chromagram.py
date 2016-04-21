@@ -67,18 +67,19 @@ labelled = []
 for i in range(size):
     sample = inputData[i]
     if sample.shape == (22050,): # sample rate of 22050 --> 20580 for sample[235] and 0s after-> messes up
-        # C = np.abs(librosa.cqt(y=sample, sr=sr, real=False))
         
-        C = librosa.feature.mfcc(y=sample, sr=22050, S=None, n_mfcc=20)
-    
+        # C = np.abs(librosa.cqt(y=sample, sr=sr, real=False))
+        C = librosa.feature.melspectrogram(y=sample, sr=sr, S=None, n_fft=512)
+
         # You can try getting the harmonic and do CQT on that, or on the whole sample! see below!
         # y_harmonic, y_percussive = librosa.effects.hpss(sample)
         # This is also an option - less clear features
         # C = librosa.feature.chroma_cqt(y=sample, sr=sr)
 
         S.append(C)
-        # print C.shape
-        S[i] = S[i].reshape((20*44,1))
+        # print S[i].shape
+        S[i] = S[i].reshape((128*44,1))
+        # S[i] = S[i].reshape((84*44,1))
         if i < math.floor(seconds_to_get/2): # label 0 for male
             labelled.append((S[i], np.array([[1],[0]])))
         # elif i in range(int(math.floor(seconds_to_get/3)), int(math.floor(seconds_to_get/3*2))):
@@ -88,7 +89,6 @@ for i in range(size):
 
     else:
         print "Sample rate is messy"
-print S[0]
 
 print len(S), len(S[0]), len(S[0][0])
 print type(S), type(S[0]), type(S[0][0])
