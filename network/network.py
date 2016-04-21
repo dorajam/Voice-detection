@@ -121,7 +121,7 @@ class Network:
             all_activations.append(a) # store all act. vectors in this list
         
         # First equation -> calculate delta at final layer from the cost function
-        delta = (all_activations[-1] - y) * sigmoid_prime(z_vectors[-1])
+        delta = (all_activations[-1] - np.argmax(y)) * sigmoid_prime(z_vectors[-1])
         delta_b[-1] = delta
         delta_w[-1] = np.dot(delta, all_activations[-2].transpose())
 
@@ -140,13 +140,11 @@ class Network:
         outcome -> the outcome that fired the most. 
         Then check how many images youll get the correct result for.
         '''
-        test_results = [(np.argmax(self.feedForward(x)),y) for x, y in test_data]
-        # print '-----------------------------------------'
-        # print test_results
+        test_results = [(np.argmax(self.feedForward(x)),np.argmax(y)) for x, y in test_data] 
         return sum(int(x == y) for x, y in test_results)                                # check for accuracy
 
 def sigmoid(z):
-        return 1.0/(1.0+np.exp(-z))
+        return .5 * (1 + np.tanh(.5 * z))
 
 def sigmoid_prime(z):
     ''' Returns the derivative of sigmoid(z = w.x + b) w.r.t. z'''
