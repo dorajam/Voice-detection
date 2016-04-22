@@ -78,8 +78,10 @@ for i in range(size):
 
         S.append(C)
         # print S[i].shape
-        S[i] = S[i].reshape((128*44,1))
-        # S[i] = S[i].reshape((84*44,1))
+
+        S[i] = S[i].reshape((128*44,1)) # for the melspegcogram
+        # S[i] = S[i].reshape((84*44,1)) # for CQT
+
         if i < math.floor(seconds_to_get/2): # label 0 for male
             labelled.append((S[i], np.array([[1],[0]])))
         # elif i in range(int(math.floor(seconds_to_get/3)), int(math.floor(seconds_to_get/3*2))):
