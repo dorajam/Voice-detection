@@ -13,14 +13,14 @@ INPUT_NEURONS = 84 * 44
 # for mel spectogram
 # INPUT_NEURONS = 128 * 44
 
-HIDDEN_LAYER1 = 50
+HIDDEN_LAYER1 = 100
 
-HIDDEN_LAYER2 = 100
-HIDDEN_LAYER3 = 100
+HIDDEN_LAYER2 = 50
+HIDDEN_LAYER3 = 30
 
 OUTPUT_NEURONS = 2
 BATCH_SIZE = 10
-lmbda = 0
+lmbda = 0	
 
 net = network.Network([INPUT_NEURONS,HIDDEN_LAYER1, OUTPUT_NEURONS])
 # the arguments are the following: training data, batch size, learning rate and number of epochs

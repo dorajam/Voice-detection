@@ -121,7 +121,7 @@ class Network:
             all_activations.append(a) # store all act. vectors in this list
         
         # First equation -> calculate delta at final layer from the cost function
-        delta = (all_activations[-1] - np.argmax(y)) * sigmoid_prime(z_vectors[-1])
+        delta = (all_activations[-1] - y) * sigmoid_prime(z_vectors[-1])
         delta_b[-1] = delta
         delta_w[-1] = np.dot(delta, all_activations[-2].transpose())
 
