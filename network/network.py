@@ -73,14 +73,13 @@ class Network:
             # timer = time.time() - start
             # print "Estimated time: ", timer
 
-        # f = open("weightsL2W.json", "w")
-        # json.dump(self.weights, f, cls=NumpyEncoder)
-        # f.close()
+        w = open("weights.json", "w")
+        json.dump(self.weights, w, cls=NumpyEncoder)
+        w.close()
 
-        # b = open("biasesL2W.json", "w")
-        # json.dump(self.biases, b, cls=NumpyEncoder)
-        # b.close()
-        # return self.result_new
+        b = open("biases.json", "w")
+        json.dump(self.biases, b, cls=NumpyEncoder)
+        b.close()
 
     def update(self, batch, learningRate, lmbda, trainingSet):
         '''
