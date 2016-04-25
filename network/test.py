@@ -6,7 +6,8 @@ import loader
 
 # take half of Dora + half of Sean -> rest should be reserved for validation
 trainingData, testData = loader.load_data()
-print len(trainingData), len(testData)
+print "length of training set: ",len(trainingData)
+print "length of test data: ", len(testData)
 
 import network
 
@@ -57,8 +58,10 @@ biases = json.load(h, object_hook=json_numpy_obj_hook)
 # ------------------------------------ FORWARDPROPAGATE ----------------------------------------
 # print biases.shape, weights.shape
 # for i in xrange(data):
-res = net.bingo(data[0][0], biases, weights)
+# res = net.bingo(data[0][0], biases, weights)
+# print res
 test_results = [(np.argmax(net.bingo(x,biases,weights)),np.argmax(y)) for x, y in data] 
 # res = softmax(res)
-print sum(int(x == y) for x, y in test_results)
+accuracy = sum(int(x == y) for x, y in test_results)
+print accuracy, "/ 206, ", "percentage: ", accuracy*100/seconds
 
