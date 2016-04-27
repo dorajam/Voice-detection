@@ -1,7 +1,7 @@
 # Dora Jambor
 # April 2016
 '''
-Takes each second of the raw .wav file, transforms it with Chromagram CQT 
+Takes each second of the raw .wav file, transforms it to mel scale (MFCCs)
 and puts it into a data array. This is then saved for the neural network as input_to_feed.json.
 Note, the original slicing up of the .wav file will take a while, 
 so make sure you write this into a json so that you can experiment with the transformations.
@@ -28,7 +28,7 @@ import IPython.display
 from numpyEncoder import *
 
 # --------- use the following commands for the cleanup -----------
-''' make sure that .wav files are of same channels'''
+''' make sure that .wav files are of same channels + sample rates'''
 # concanate .wav files, get rid of silences under -20 decibels and trim -> 11.10mins for each sample on one file
 # ffmpeg -f concat -i <( for f in *.wav; do echo "file '$(pwd)/$f'"; done ) output.wav
 # ffmpeg -i output.wav -t 8280 -acodec copy output_trimmed.wav
@@ -36,10 +36,10 @@ from numpyEncoder import *
 # ----------------------------------------------------------------
 
 # # 11.10 mins of each artist
-# audio_path = 'sound_input.wav'
+# audio_path = 'output.wav'
 
 input1 = []
-seconds_to_get = 1221
+seconds_to_get = 2160
 
 # for i in range(seconds_to_get):
 #     y, sr = librosa.load(audio_path, duration=1.0, offset=i)
@@ -58,7 +58,7 @@ f.close()
 
 # ------------- transform sound data + label ---------------
 size = len(inputData)
-print size
+print size, inputData[0].shape
 sr = 22050
 S = []
 labelled = []
@@ -67,9 +67,11 @@ labelled = []
 for i in range(size):
     sample = inputData[i]
     if sample.shape == (22050,): # sample rate of 22050 --> 20580 for sample[235] and 0s after-> messes up
-        
-        # C = np.abs(librosa.cqt(y=sample, sr=sr, real=False))
-        C = librosa.feature.melspectrogram(y=sample, sr=sr, S=None, n_fft=512)
+
+        C = np.abs(librosa.cqt(y=sample, sr=sr, real=False))
+        # C = librosa.feature.melspectrogram(y=sample, sr=sr, S=None, n_fft=512)
+        if not np.any(C):
+            print 'yooooooo'
 
         # You can try getting the harmonic and do CQT on that, or on the whole sample! see below!
         # y_harmonic, y_percussive = librosa.effects.hpss(sample)
@@ -77,7 +79,6 @@ for i in range(size):
         # C = librosa.feature.chroma_cqt(y=sample, sr=sr)
 
         S.append(C)
-        # print S[i].shape
 
         # S[i] = S[i].reshape((128*44,1)) # for the melspegcogram
         S[i] = S[i].reshape((84*44,1)) # for CQT

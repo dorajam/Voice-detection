@@ -44,8 +44,6 @@ class Network:
         '''
         if test_data: n_test = len(test_data)
         trainingSize = len(trainingSet)
-        print 'the training size is: ', trainingSize
-        print 'the test size is: ', len(test_data)
         self.result_new = []
 
         # repeat this until finding 'reliable' accuracy between desired and real outcomes
