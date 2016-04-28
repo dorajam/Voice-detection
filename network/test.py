@@ -1,13 +1,21 @@
+
+# --------------------------- PREPARE TRAINING & TEST DATA ----------------------------
+
 import librosa
 import json
 from numpyEncoder import *
 
 import loader
 
-# take half of Dora + half of Sean -> rest should be reserved for validation
-trainingData, testData = loader.load_data()
+trainingData = loader.load_data()
+
+# this is used for testing with the same people
+testData = loader.alternative_testData()
+
 print "length of training set: ",len(trainingData)
 print "length of test data: ", len(testData)
+
+# ------------------------------------ NETWORK ----------------------------------------
 
 import network
 
@@ -18,14 +26,14 @@ NUM_EPOCHS = 30
 # for mel spectogram
 INPUT_NEURONS = 128 * 44
 
-HIDDEN_LAYER1 = 100
+HIDDEN_LAYER1 = 50
 
 HIDDEN_LAYER2 = 50
 HIDDEN_LAYER3 = 30
 
 OUTPUT_NEURONS = 2
 BATCH_SIZE = 10
-lmbda = 0   
+lmbda = 0
 
 net = network.Network([INPUT_NEURONS,HIDDEN_LAYER1, OUTPUT_NEURONS])
 # the arguments are the following: training data, batch size, learning rate and number of epochs

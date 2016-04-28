@@ -59,7 +59,6 @@ f.close()
 # ------------- transform sound data + label ---------------
 size = len(inputData)
 print size, inputData[0].shape
-sr = 22050
 S = []
 labelled = []
 
@@ -68,10 +67,8 @@ for i in range(size):
     sample = inputData[i]
     if sample.shape == (22050,): # sample rate of 22050 --> 20580 for sample[235] and 0s after-> messes up
 
-        C = np.abs(librosa.cqt(y=sample, sr=sr, real=False))
-        # C = librosa.feature.melspectrogram(y=sample, sr=sr, S=None, n_fft=512)
-        if not np.any(C):
-            print 'yooooooo'
+        C = np.abs(librosa.cqt(y=sample, sr=sample.shape[0], real=False))
+        # C = librosa.feature.melspectrogram(y=sample, sr=sample.shape[0], S=None, n_fft=512)
 
         # You can try getting the harmonic and do CQT on that, or on the whole sample! see below!
         # y_harmonic, y_percussive = librosa.effects.hpss(sample)
@@ -83,11 +80,9 @@ for i in range(size):
         # S[i] = S[i].reshape((128*44,1)) # for the melspegcogram
         S[i] = S[i].reshape((84*44,1)) # for CQT
 
-        if i < math.floor(seconds_to_get/2): # label 0 for male
+        if i < math.floor(seconds_to_get/2): # female
             labelled.append((S[i], np.array([[1],[0]])))
-        # elif i in range(int(math.floor(seconds_to_get/3)), int(math.floor(seconds_to_get/3*2))):
-        #     labelled.append((S[i], 1))
-        else: # else female
+        else:                                # male
             labelled.append((S[i], np.array([[0],[1]])))
 
     else:
