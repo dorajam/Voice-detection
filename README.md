@@ -1,5 +1,5 @@
 ## Sound recognition with neural networks
-This was an experiment to see how well Mel Frequency Cepstral Coefficients (MFCC’s) and Chroma analysis are doing in extracting features from audio signals. To do this, I wanted to detect whether some song is by Chet Baker or Beyonce - clearly two very different genres. This turned out horribly difficult to accomplish, so I moved onto simpler data and used raw audio books to detect if some voice is of a women or man.
+This was an experiment to see how well the Mel Frequency Cepstral Coefficients (MFCC’s) and Chroma analysis are doing in extracting features from audio signals. To do this, I wanted to detect whether some song is by Chet Baker or Beyonce - clearly two very different genres. This turned out horribly difficult to accomplish, so I moved onto simpler data and used raw audio books to detect if some voice is of a women or man.
 Next, I transformed the preprocessed audio snippets, and fed them all into a neural network to classify different pitches.
    
 - see the soundTransformation directory for my implementation of the Mel Frequency Cepstral Coefficients (MFCC’s). For most of the transformation I used the Python Librosa library   
