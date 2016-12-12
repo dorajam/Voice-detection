@@ -1,5 +1,4 @@
 ## Sound recognition with neural networks
-####  - still in progress -
 This is an experiment to see how well MelFrequency Cepstral Coefficients (MFCC’s) and Chroma analysis are doing in extracting features. I then use a classical neural network to classify different pitches. 
 
  - see the soundTransformation directory for my implementation of the MelFrequency Cepstral Coefficients (MFCC’s). For most of the transformation I used librosa
